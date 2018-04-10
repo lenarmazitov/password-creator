@@ -7,3 +7,11 @@
   padding: 10px;
 }
 
+.hint {
+  color: #999;
+  font-size: 14px;
+}
+
+.formControl {
+  margin-bottom: 20px;
+}

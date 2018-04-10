@@ -2,7 +2,6 @@ import md5 from 'md5';
 
 function generate(name, salt, cycles) {
   if (cycles > 0) {
-    console.log(cycles)
     return generate(md5(name + '_' + salt), salt, cycles - 1);
   }
 

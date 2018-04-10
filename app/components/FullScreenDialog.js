@@ -1,22 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Dialog from 'material-ui/Dialog';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import Slide from 'material-ui/transitions/Slide';
-
-const styles = {
-  appBar: {
-    position: 'relative',
-  },
-  flex: {
-    flex: 1,
-  },
-};
+import {AppBar, Dialog, IconButton, NavigationClose, Toolbar} from "material-ui"
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -47,25 +32,18 @@ class FullScreenDialog extends React.PureComponent {
   }
 
   render() {
-    const { classes } = this.props;
     return (
       <div>
         <Dialog
-          fullScreen
           open={this.state.open}
-          onClose={this.handleClose}
+          onRequestClose={this.handleClose}
           transition={Transition}
         >
-          <AppBar className={classes.appBar}>
-            <Toolbar>
-              <IconButton color="inherit" onClick={this.handleClose} aria-label="Close">
-                <CloseIcon />
-              </IconButton>
-              <Typography variant="title" color="inherit" className={classes.flex}>
-                {this.props.title}
-              </Typography>
-            </Toolbar>
-          </AppBar>
+          <AppBar
+            title={<span>{this.props.title}</span>}
+            onLeftIconButtonClick={this.handleClose}
+            iconElementLeft={<IconButton><CloseIcon /></IconButton>}
+          />
           {this.props.children}
         </Dialog>
       </div>
@@ -75,8 +53,7 @@ class FullScreenDialog extends React.PureComponent {
 
 FullScreenDialog.propTypes = {
   open: PropTypes.bool,
-  classes: PropTypes.object.isRequired,
   onClose: PropTypes.func,
 };
 
-export default withStyles(styles)(FullScreenDialog);
+export default FullScreenDialog;

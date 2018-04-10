@@ -1,25 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import styles from './Home.css';
-import {
-  Divider, Fade, InputLabel, List, ListItem, ListItemText, Paper, RaisedButton, Snackbar,
-  TextField
-} from "material-ui"
-import FormControl from "material-ui/es/Form/FormControl"
-import Button from "material-ui/es/Button/Button"
-import Icon from "material-ui/es/Icon/Icon"
-import GenerateIcon from '@material-ui/icons/Build';
-import CopyIcon from '@material-ui/icons/ContentCopy';
-import Select from "material-ui/es/Select/Select"
-import MenuItem from "material-ui/es/Menu/MenuItem"
-import FormHelperText from "material-ui/es/Form/FormHelperText"
 import FullScreenDialog from "./FullScreenDialog"
 import generator from "../utils/generator"
+import {Divider, List, ListItem, MenuItem, Paper, RaisedButton, SelectField, Snackbar, TextField} from "material-ui"
+import CopyIcon from 'material-ui/svg-icons/content/content-copy'
+import GenerateIcon from 'material-ui/svg-icons/action/build'
 
-type Props = {};
-
-export default class Home extends Component<Props> {
-  props: Props;
+export default class Home extends Component {
 
   constructor(props) {
     super(props);
@@ -34,8 +22,12 @@ export default class Home extends Component<Props> {
     this.generate.bind(this);
   }
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+  handleChange = name => (event, index, value) => {
+    this.setState({ [name]: value });
+  };
+
+  handleChangeText = name => (event, value) => {
+    this.setState({ [name]: value });
   };
 
   generate() {
@@ -53,69 +45,66 @@ export default class Home extends Component<Props> {
 
     return (
       <Paper className={styles.paper}>
-        <FormControl fullWidth  margin="normal">
-          <TextField id="password-name" onChange={this.handleChange('name')}  label={"Название пароля"} helperText={nameLabel} />
-        </FormControl>
-        <FormControl fullWidth  margin="normal">
-          <TextField id="password-salt" onChange={this.handleChange('salt')} label={"Соль"} helperText={saltLabel} />
-        </FormControl>
-        <FormControl fullWidth  margin="normal">
-          <Select
+        <div className={styles.formControl}>
+          <TextField id="password-name" onChange={this.handleChangeText('name')} hintText={"Название пароля"} />
+          <div className={styles.hint}>{nameLabel}</div>
+        </div>
+        <div className={styles.formControl}>
+          <TextField id="password-salt" onChange={this.handleChangeText('salt')} hintText={"Соль"} />
+          <div className={styles.hint}>{saltLabel}</div>
+        </div>
+        <div className={styles.formControl}>
+          <SelectField
+            id="encryptionCycles"
             value={this.state.encryptionCycles}
             onChange={this.handleChange('encryptionCycles')}
-            inputProps={{
-              name: 'age',
-              id: 'encryptionCycles',
-            }}
           >
-            <MenuItem value={1}>1 цикл шифрования</MenuItem>
-            <MenuItem value={10}>10 циклов шифрования</MenuItem>
-            <MenuItem value={50}>50 циклов шифрования</MenuItem>
-            <MenuItem value={100}>100 циклов шифрования</MenuItem>
-            <MenuItem value={1000}>1000 циклов шифрования</MenuItem>
-            <MenuItem value={10000}>10000 циклов шифрования</MenuItem>
-          </Select>
-          <FormHelperText>Чем больше циклов шифрования тем сложнее будет подобрать вашу соль c помощью этого инструмента. Это не защитит от подбора пароля брутфорсом. ВНИМАНИЕ! Пароль ЗАВИСИТ от этого параметра.</FormHelperText>
-        </FormControl>
-        <FormControl fullWidth style={{marginTop: 10}}>
-          <Button onClick={this.generate.bind(this)} variant="raised" color="primary">
-            Сгенерировать <Icon style={{marginLeft: 5}}><GenerateIcon /></Icon>
-          </Button>
-        </FormControl>
+            <MenuItem value={1} primaryText="1 цикл шифрования" />
+            <MenuItem value={10} primaryText="10 циклов шифрования" />
+            <MenuItem value={100} primaryText="100 циклов шифрования" />
+            <MenuItem value={1000} primaryText="1000 циклов шифрования" />
+          </SelectField>
+          <div className={styles.hint}>Чем больше циклов шифрования тем сложнее будет подобрать вашу соль c помощью этого инструмента. Это не защитит от подбора пароля брутфорсом. ВНИМАНИЕ! Пароль ЗАВИСИТ от этого параметра.</div>
+        </div>
+        <div style={{marginTop: 20}}>
+          <RaisedButton
+            onClick={this.generate.bind(this)}
+            primary={true}
+            icon={<GenerateIcon />}
+            label="Сгенерировать"
+          />
+        </div>
         <FullScreenDialog open={this.state.openPasswordInfoDialog} onClose={() => {
           this.setState({openPasswordInfoDialog: false});
         }} title="Информация по вашему паролю">
-          <List component="nav">
-            <ListItem>
-              <ListItemText primary="Название вашего пароля" secondary={this.state.name || "#none#"} />
-            </ListItem>
+          <List>
+            <ListItem primaryText="Название вашего пароля" secondaryText={this.state.name || "#none#"} />
             <Divider />
-            <ListItem divider>
-              <ListItemText primary="Соль к вашему паролю" secondary={this.state.salt || "#none#"} />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Циклы шифрования" secondary={this.state.encryptionCycles} />
-            </ListItem>
-            <Divider light />
-            <ListItem>
-              <TextField id="passwordField" value={this.state.password || "#none#"} style={{ marginRight: 10 }} />
-              <Button color="secondary" variant="raised" onClick={() => {
-                let passwordField = document.getElementById("passwordField");
-                passwordField.focus();
-                passwordField.select();
-                document.execCommand('copy');
-                this.setState({ openCopiedSnack: true });
-              }}>Копировать <Icon style={{marginLeft: 5}}><CopyIcon /></Icon></Button>
-            </ListItem>
+            <ListItem primaryText="Соль к вашему паролю" secondaryText={this.state.salt || "#none#"} />
+            <Divider />
+            <ListItem primaryText="Циклы шифрования" secondaryText={this.state.encryptionCycles} />
+            <Divider />
+            <ListItem secondaryTextLines={2} primaryText="Ваш пароль" secondaryText={
+              <div style={{height: 50}}>
+                <TextField id="passwordField" value={this.state.password || "#none#"} style={{ marginRight: 10 }} />
+                <RaisedButton
+                  label="Копировать"
+                  primary={true}
+                  icon={<CopyIcon />}
+                  onClick={() => {
+                  let passwordField = document.getElementById("passwordField");
+                  passwordField.focus();
+                  passwordField.select();
+                  document.execCommand('copy');
+                  this.setState({ openCopiedSnack: true });
+                }} />
+              </div>
+            } />
           </List>
           <Snackbar
             open={this.state.openCopiedSnack}
-            onClose={() => {this.setState({openCopiedSnack: false})}}
+            onRequestClose={() => {this.setState({openCopiedSnack: false})}}
             autoHideDuration={3000}
-            transition={Fade}
-            SnackbarContentProps={{
-              'aria-describedby': 'message-id',
-            }}
             message={<span id="message-id">Скопировано</span>}
           />
         </FullScreenDialog>
@@ -123,3 +112,6 @@ export default class Home extends Component<Props> {
     );
   }
 }
+
+Home.propTypes = {
+};

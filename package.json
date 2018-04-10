@@ -83,9 +83,7 @@
     "url": "https://github.com/chentsulin"
   },
   "license": "MIT",
-  "keywords": [
-
-  ],
+  "keywords": [],
   "homepage": "https://github.com/lenarmazitov/password-creator",
   "jest": {
     "moduleNameMapper": {
@@ -176,12 +174,11 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
-    "@material-ui/icons": "^1.0.0-beta.42",
     "devtron": "^1.4.0",
     "electron-debug": "^1.5.0",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
-    "material-ui": "^1.0.0-beta.41",
+    "material-ui": "^0.20.0",
     "md5": "^2.2.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
